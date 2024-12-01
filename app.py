@@ -56,11 +56,18 @@ symbol = st.text_input("Enter Crypto Symbol (e.g., BTCUSDT):", value="BTCUSDT")
 
 if st.button("Analyze"):
     data = fetch_crypto_data(symbol)
+    if data.empty or 'Close' not in data.columns:
+        st.error("No valid data available. Please check etc")
+    else:
     data = calculate_rsi(data)
+    if 'RSI' not in data.columns:
+        st.warning("RSI calculation failed")
     data = calculate_moving_averages(data)
+    if 'Short MA' not in data.columns or 'Long MA' not in data.columns:
+        st.warning("Moving averages calculation failed")
     data = generate_signals(data)
 
-    # Display Data
+    # Display data
     st.write(data[['Close', 'RSI', 'Short MA', 'Long MA', 'Signal']])
 
     # Plot
