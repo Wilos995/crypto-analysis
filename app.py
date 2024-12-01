@@ -18,7 +18,8 @@ def fetch_crypto_data(symbol, interval='1h', limit=500):
     # Clean and convert to numeric
   for col in ['Open', 'High', 'Low', 'Close', 'Volume']:
       df[col] = pd.to_numeric(df[col], errors='coerce')
-      df.dropna(subset = ['Close'], inplace = True)
+      
+    df.dropna(subset = ['Close'], inplace = True)
     return df
 
 # RSI Calculation
