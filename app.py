@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 
 # Fetch real-time crypto data
-def fetch_crypto_data(symbol, interval='1h', limit=50):
+def fetch_crypto_data(symbol, interval='1h', limit=500):
     url = f"https://api.binance.com/api/v3/klines?symbol={symbol}&interval={interval}&limit={limit}"
     response = requests.get(url)
     data = response.json()
@@ -16,10 +16,9 @@ def fetch_crypto_data(symbol, interval='1h', limit=50):
     df = pd.DataFrame(data, columns=columns)
 
     # Clean and convert to numeric
-    df['Close'] = pd.to_numeric(df['Close'])
-    df['Open'] = pd.to_numeric(df['Open'])
-    df['High'] = pd.to_numeric(df['High'])
-    df['Low'] = pd.to_numeric(df['Low'])
+  for col in ['Open', 'High', 'Low', 'Close', 'Volume']:
+      df[col] = pd.to_numeric(df[col], errors='coerce')
+      df.dropna(subset = ['Close'], inplace = True)
     return df
 
 # RSI Calculation
@@ -40,6 +39,9 @@ def calculate_moving_averages(data, short_window=9, long_window=21):
 
 # Generate Buy/Sell Signals
 def generate_signals(data):
+    if data.empty:
+        print("No data available for signal generation")
+        return data
     data['Signal'] = 0
     # Buy Signal: RSI < 30 and Price > Short MA
     data.loc[(data['RSI'] < 30) & (data['Close'] > data['Short MA']), 'Signal'] = 1
