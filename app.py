@@ -61,10 +61,10 @@ if st.button("Analyze"):
     else:
         data = calculate_rsi(data)
         if 'RSI' not in data.columns:
-        st.warning("RSI calculation failed")
+            st.warning("RSI calculation failed")
         data = calculate_moving_averages(data)
         if 'Short MA' not in data.columns or 'Long MA' not in data.columns:
-        st.warning("Moving averages calculation failed")
+            st.warning("Moving averages calculation failed")
         data = generate_signals(data)    
         # Display data
         st.write(data[['Close', 'RSI', 'Short MA', 'Long MA', 'Signal']])   
